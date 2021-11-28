@@ -1,0 +1,37 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31903.59
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ImageClassification.Api", "ImageClassification.Api\ImageClassification.Api.csproj", "{76C60C4F-07B1-480C-9579-B61D6D52456C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ImageClassification.TensorFlow", "ImageClassification.TensorFlow\ImageClassification.TensorFlow.csproj", "{346116B4-3E10-47B7-BA03-3A553EBD6D77}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ImageClassification.ML", "ImageClassification.ML\ImageClassification.ML.csproj", "{E7187771-1680-4081-99FB-AE93B03361CD}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{76C60C4F-07B1-480C-9579-B61D6D52456C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{76C60C4F-07B1-480C-9579-B61D6D52456C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{76C60C4F-07B1-480C-9579-B61D6D52456C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{76C60C4F-07B1-480C-9579-B61D6D52456C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{346116B4-3E10-47B7-BA03-3A553EBD6D77}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{346116B4-3E10-47B7-BA03-3A553EBD6D77}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{346116B4-3E10-47B7-BA03-3A553EBD6D77}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{346116B4-3E10-47B7-BA03-3A553EBD6D77}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E7187771-1680-4081-99FB-AE93B03361CD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E7187771-1680-4081-99FB-AE93B03361CD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E7187771-1680-4081-99FB-AE93B03361CD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E7187771-1680-4081-99FB-AE93B03361CD}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {F4EB0AC7-5C3C-424B-8191-6A2AAED1C24E}
+	EndGlobalSection
+EndGlobal
