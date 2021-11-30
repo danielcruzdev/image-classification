@@ -1,4 +1,5 @@
-﻿using ImageClassification.ML;
+﻿using ImageClassification.Api.Models;
+using ImageClassification.ML;
 using ImageClassification.TensorFlow;
 using Microsoft.AspNetCore.Mvc;
 
@@ -9,92 +10,46 @@ namespace ImageClassification.Api.Controllers
     public class ClassificationController : ControllerBase
     {
         [HttpPost]
-        public async Task<ActionResult<string>> GetClassificationPhoto([FromForm] IFormFile file)
+        public async Task<ActionResult<string>> GetClassificationPhoto([FromForm] List<IFormFile> files)
         {
-            var pathFile = Path.Combine("C:", "ArquivosRecebidos", $"{file.FileName}");
-            using var fileStream = new FileStream(pathFile, FileMode.Create);
-            await file.CopyToAsync(fileStream);
-            fileStream.Close();
-
-            var input = new ModelInput()
+            var predicts = new List<PredictResult>();
+            foreach (var file in files)
             {
-                ImageSource = pathFile,
-            };
+                var pathFile = Path.Combine("C:", "ArquivosRecebidos", $"{file.FileName}");
+                using var fileStream = new FileStream(pathFile, FileMode.Create);
+                await file.CopyToAsync(fileStream);
+                fileStream.Close();
 
-            var resultML = ConsumeModel.Predict(input);
-            var predictionML = resultML.Prediction;
-            var scoreML = resultML.Score.Max();
-            var predictionTF = "";
-            var scoreTF = 0.0f;
+                var input = new ModelInput()
+                {
+                    ImageSource = pathFile,
+                };
 
-            if (scoreML < 0.8)
-            {
+                var resultML = ConsumeModel.Predict(input);
+                var predictionML = resultML.Prediction;
+                var scoreML = resultML.Score.Max();
+                var predictionTF = "";
+                var scoreTF = 0.0f;
+
                 var resultTF = ConsumeTF.Predict(pathFile);
                 predictionTF = resultTF.PredictedLabelValue;
                 scoreTF = resultTF.Score.Max();
+
+                var predict = scoreML > scoreTF ? FormatPredict(predictionML) : FormatPredict(predictionTF);
+                var score = scoreML > scoreTF ? scoreML : scoreTF;
+                var tecnology = scoreML > scoreTF ? "ML .NET" : "Tensor Flow";
+
+                var predictResult = new PredictResult(file.FileName, predict, tecnology, score);
+
+                predicts.Add(predictResult);
+
+                System.IO.File.Delete(pathFile);
             }
 
-            var predictResult = new
-            {
-                Predict = scoreML > scoreTF ? predictionML : predictionTF,
-                Score = scoreML > scoreTF ? scoreML : scoreTF,
-                Type = scoreML > scoreTF ? "ML .NET" : "Tensor Flow"
-            };
-
-            System.IO.File.Delete(pathFile);
-            return Ok(predictResult);
+            return Ok(predicts);
         }
 
-        [HttpPost("ML")]
-        public async Task<ActionResult<string>> GetClassificationPhotoML([FromForm] IFormFile file) 
-        {
-            var pathFile = Path.Combine("C:", "ArquivosRecebidos", $"{file.FileName}");
-            using var fileStream = new FileStream(pathFile, FileMode.Create);
-            await file.CopyToAsync(fileStream);
-            fileStream.Close();
-
-            var input = new ModelInput()
-            {
-                ImageSource = pathFile,
-            };
-
-            var result = ConsumeModel.Predict(input);
-            var score = result.Score.Max();
-
-            var predictResult = new
-            {
-                Predict = result.Prediction,
-                Score = score,
-                Type = "ML .NET"
-            };
-
-            System.IO.File.Delete(pathFile);
-            return Ok(predictResult);
-        }
-
-        [HttpPost("TF")]
-        public async Task<ActionResult<string>> GetClassificationPhotoTF([FromForm] IFormFile file)
-        {
-            var pathFile = Path.Combine("C:", "ArquivosRecebidos", $"{file.FileName}");
-            using var fileStream = new FileStream(pathFile, FileMode.Create);
-            await file.CopyToAsync(fileStream);
-            fileStream.Close();
-
-            var result = ConsumeTF.Predict(pathFile);
-            var score = result.Score.Max();
-
-            var predictResult = new
-            {
-                Predict = ReturnPredictTensorFlow(result.PredictedLabelValue),
-                Score = score,
-                Type = "Tensor Flow"
-            };
-
-            System.IO.File.Delete(pathFile);
-            return Ok(predictResult);
-        }
-
-        private static string ReturnPredictTensorFlow(string labelValue)
+        private static string FormatPredict(string labelValue)
         {
             labelValue = labelValue.ToLower();
             if (labelValue.Contains("bird"))
